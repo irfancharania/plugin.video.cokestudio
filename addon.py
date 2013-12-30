@@ -129,10 +129,6 @@ def get_show_menu(siteid, cls):
                         'get_season_menu', siteid=siteid, cls=cls,
                         seasonid=item['pk'], url=item['url'])
                 } for item in c]
-
-                print seasonitems
-                print '------------'
-
             return seasonitems
 
         else:

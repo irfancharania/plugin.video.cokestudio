@@ -41,15 +41,6 @@ class BaseForum(object):
                 'url': url,
                 'pk': pk
             })
-
-            print  t.encode('utf-8')
-
-
-        print '------------------'
-        print 'items from scraper'
-        print items
-        print '------------------'
-
         return items
 
     def get_season_menu(self, base_url):
@@ -110,9 +101,10 @@ class BaseForum(object):
 
             desc = ''
             icontainer = soup.find('ul', {'class': 'songInfo'})
-            info = icontainer.find('li', {'class': pk})
-            if info.p:
-                desc = info.p.contents[0].encode('utf-8', 'ignore')
+            if icontainer:
+                info = icontainer.find('li', {'class': pk})
+                if info.p:
+                    desc = info.p.contents[0].encode('utf-8', 'ignore')
 
             items.append({
                 'label': txt,

@@ -1,5 +1,3 @@
-- Allow choosing language in settings per country
-
 - Add bookmarks
 
 - Add caching
