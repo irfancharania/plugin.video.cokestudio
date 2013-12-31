@@ -1,7 +1,6 @@
 # XBMC Media Center language file
-# Addon Name: PakTVForum
-# Addon id: plugin.video.paktvforum
-# Addon version: 0.0.6
+# Addon Name: Coke Studio
+# Addon id: plugin.video.cokestudio
 # Addon Provider: Irfan Charania
 msgid ""
 msgstr ""
@@ -12,67 +11,89 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30000"
-msgid "PakTVForum"
-msgstr ""
-
-msgctxt "#30001"
-msgid "Live Stream XML Url"
+msgid "Coke Studio"
 msgstr ""
 
 #########################
 
 msgctxt "#30010"
-msgid "The Pak TV Forum"
+msgid "English"
 msgstr ""
 
 msgctxt "#30011"
-msgid "Desi Ronak Forum"
+msgid "Arabic"
 msgstr ""
 
 msgctxt "#30012"
-msgid "Desi Rulez Forum"
+msgid "French"
 msgstr ""
 
-msgctxt "#30016"
-msgid "Live Streams"
+msgctxt "#30013"
+msgid "Swahili"
 msgstr ""
 
 #########################
 
-msgctxt "#30020"
+msgctxt "#30030"
+msgid "Pakistan"
+msgstr ""
+
+msgctxt "#30031"
+msgid "India"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Kenya"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Middle East"
+msgstr ""
+
+msgctxt "#30034"
+msgid "Nigeria"
+msgstr ""
+
+msgctxt "#30035"
+msgid "Tanzania"
+msgstr ""
+
+msgctxt "#30036"
+msgid "Uganda"
+msgstr ""
+
+#########################
+
+msgctxt "#30050"
 msgid "Please try again"
 msgstr ""
 
-msgctxt "#30021"
+msgctxt "#30051"
 msgid "Website is unavailable"
 msgstr ""
 
-msgctxt "#30022"
+msgctxt "#30052"
 msgid "is unavailable at this time"
 msgstr ""
 
-msgctxt "#30023"
+msgctxt "#30053"
 msgid "Please try again at a later time"
 msgstr ""
 
-msgctxt "#30024"
-msgid "Unable to load channels from xml"
+msgctxt "#30055"
+msgid "No seasons found."
 msgstr ""
 
-msgctxt "#30026"
+msgctxt "#30056"
 msgid "No episodes found."
 msgstr ""
 
-msgctxt "#30027"
+msgctxt "#30057"
 msgid "No valid links found."
 msgstr ""
 
-msgctxt "#30028"
+msgctxt "#30058"
 msgid "Unable to play video"
-msgstr ""
-
-msgctxt "#30029"
-msgid "Please choose another source"
 msgstr ""
 
 #########################

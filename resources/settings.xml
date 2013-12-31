@@ -1,9 +1,9 @@
 ﻿<settings>
     <category label="Languages">
-        <setting label="Middle East" type="enum" id="lang_me" values="English|Arabic" default="0" />
-        <setting label="Kenya" type="enum" id="lang_ke" values="English|French|Swahili" default="0" />
-        <setting label="Nigeria" type="enum" id="lang_ng" values="English|French" default="0" />
-        <setting label="Tanzania" type="enum" id="lang_tz" values="English|Swahili" default="0" />
-        <setting label="Uganda" type="enum" id="lang_ug" values="English|Swahili" default="0" />
+        <setting label="30033" type="enum" id="lang_me" lvalues="30010|30011" default="0" />
+        <setting label="30032" type="enum" id="lang_ke" lvalues="30010|30012|30013" default="0" />
+        <setting label="30034" type="enum" id="lang_ng" lvalues="30010|30012" default="0" />
+        <setting label="30035" type="enum" id="lang_tz" lvalues="30010|30013" default="0" />
+        <setting label="30036" type="enum" id="lang_ug" lvalues="30010|30013" default="0" />
     </category>
 </settings>

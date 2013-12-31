@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Plugin Name -->
-  <string id="30000">PakTVForum</string>
+  <string id="30000">Coke Studio</string>
 
-  <!-- Settings -->
-  <string id="30001">Live Stream XML Url</string>
+  <!-- Languages -->
+  <string id="30010">English</string>
+  <string id="30011">Arabic</string>
+  <string id="30012">French</string>
+  <string id="30013">Swahili</string>
 
-  <!-- Sites -->
-  <string id="30010">The Pak TV Forum</string>
-  <string id="30011">Desi Ronak Forum</string>
-  <string id="30012">Desi Rulez Forum</string>
-  <string id="30016">Live Streams</string>
+  <!-- Countries -->
+  <string id="30030">Pakistan</string>
+  <string id="30031">India</string>
+  <string id="30032">Kenya</string>
+  <string id="30033">Middle East</string>
+  <string id="30034">Nigeria</string>
+  <string id="30035">Tanzania</string>
+  <string id="30036">Uganda</string>
 
   <!-- General -->
-  <string id="30020">Please try again</string>
-  <string id="30021">Website is unavailable</string>
-  <string id="30022">is unavailable at this time</string>
-  <string id="30023">Please try again at a later time</string>
-  <string id="30024">Unable to load channels from xml</string>
-  <string id="30026">No episodes found.</string>
-  <string id="30027">No valid links found.</string>
-  <string id="30028">Unable to play video</string>
-  <string id="30029">Please choose another source</string>
+  <string id="30050">Please try again</string>
+  <string id="30051">Website is unavailable</string>
+  <string id="30052">is unavailable at this time</string>
+  <string id="30053">Please try again at a later time</string>
+  <string id="30055">No seasons found.</string>
+  <string id="30056">No episodes found.</string>
+  <string id="30057">No valid links found.</string>
+  <string id="30058">Unable to play video</string>
 
   <!-- Options -->
   <string id="30100">Url Resolver Settings</string>

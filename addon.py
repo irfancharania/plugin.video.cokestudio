@@ -23,18 +23,16 @@ LANG = {
         'lang_ug', choices=('en_UG/', 'sw_UG/')),
 }
 
-
 STRINGS = {
     'url_resolver_settings': 30100,
-    'try_again': 30020,
-    'site_unavailable': 30021,
-    'is_unavailable': 30022,
-    'try_again_later': 30023,
-    'channel_xml_fail': 30024,
-    'no_episodes': 30026,
-    'no_valid_links': 30027,
-    'cannot_play': 30028,
-    'choose_source': 30029,
+    'try_again': 30050,
+    'site_unavailable': 30051,
+    'is_unavailable': 30052,
+    'try_again_later': 30053,
+    'no_seasons': 30056,
+    'no_episodes': 30056,
+    'no_valid_links': 30057,
+    'cannot_play': 30058,
     'bookmarks': 30110,
     'add_bookmark': 30111,
     'remove_bookmark': 30112,
@@ -71,6 +69,13 @@ def index():
     by_label = itemgetter('label')
     items = sorted(items, key=by_label)
 
+    # insert bookmarks at top
+    items.insert(0, {
+        'label': '[B]{txt}[/B]'.format(txt=_('bookmarks')),
+        'path': plugin.url_for('show_bookmarks'),
+        'thumbnail': util.get_image_path('bookmark.png')})
+
+    # add url resolver settings at bottom
     thumb = util.get_image_path('settings.png')
     items.append({
         'label': '[COLOR white]{txt}[/COLOR]'.format(
@@ -83,6 +88,106 @@ def index():
 
 
 ###############################################
+
+
+@plugin.route('/bookmarks/')
+def show_bookmarks():
+    def context_menu(item_path):
+        context_menu = [(
+            _('remove_bookmark'),
+            'XBMC.RunPlugin(%s)' % plugin.url_for('remove_bookmark',
+                                                  item_path=item_path,
+                                                  refresh=True),
+        )]
+        return context_menu
+
+    bookmarks = plugin.get_storage(bookmark_storage)
+    items = bookmarks.values()
+
+    for item in items:
+        item['context_menu'] = context_menu(item['path'])
+    if not items:
+        items = [{
+            'label': _('no_bookmarks'),
+            'path': plugin.url_for('show_bookmarks'),
+        }]
+
+    return sorted(items, key=lambda x: x['label'].partition('-')[2])
+
+
+@plugin.route('/bookmarks/add/<item_path>')
+def add_bookmark(item_path):
+    bookmarks = plugin.get_storage(bookmark_storage)
+
+    if bookmarks is not None:
+        if not item_path in bookmarks:
+            temp = plugin.get_storage(temp_storage)
+            item = temp[item_path]
+
+            groupname = plugin.request.args['groupname'][0]
+            if groupname:
+                item['label'] = groupname + ' - ' + item['label']
+
+            bookmarks[item_path] = item
+        else:
+            item = bookmarks[item_path]
+
+        dialog = xbmcgui.Dialog()
+        dialog.ok(_('add_bookmark'),
+                  _('bookmark_success'),
+                  '{label}'.format(label=item['label']))
+    else:
+        msg = [_('bookmark_storage_fail'), _('try_again')]
+        plugin.log.error(msg[0])
+        dialog = xbmcgui.Dialog()
+        dialog.ok(_('bookmark_error'), *msg)
+
+
+@plugin.route('/bookmarks/remove/<item_path>')
+def remove_bookmark(item_path):
+    bookmarks = plugin.get_storage(bookmark_storage)
+    label = bookmarks[item_path]['label']
+
+    dialog = xbmcgui.Dialog()
+    if dialog.yesno(_('remove_bookmark'),
+                    _('bookmark_remove_question'),
+                    '{label}'.format(label=label)):
+
+        plugin.log.debug('remove bookmark: {label}'.format(label=label))
+
+        if item_path in bookmarks:
+            del bookmarks[item_path]
+            bookmarks.sync()
+            xbmc.executebuiltin("Container.Refresh")
+
+
+###############################################
+
+
+def __add_listitem(items, groupname=''):
+    '''
+    Redirect all entries through here
+    to add bookmark option in context menu and
+    to add item info to temp storage
+    '''
+    def context_menu(item_path, groupname):
+        context_menu = [(
+            _('add_bookmark'),
+            'XBMC.RunPlugin(%s)' % plugin.url_for(
+                endpoint='add_bookmark',
+                item_path=item_path,
+                groupname=groupname
+            ),
+        )]
+        return context_menu
+
+    temp = plugin.get_storage(temp_storage)
+    temp.clear()
+    for item in items:
+        temp[item['path']] = item
+        item['context_menu'] = context_menu(item['path'], groupname)
+    temp.sync()
+    return items
 
 
 def get_cached(func, *args, **kwargs):
@@ -117,19 +222,27 @@ def get_show_menu(siteid, cls):
         available = util.is_site_available(api.base_url)
 
         if available:
-            seasonitems = []
+            items = []
 
             # get list of seasons
-            c = api.get_show_menu(lang)
+            data = get_cached(api.get_show_menu, lang)
 
-            if c:
-                seasonitems = [{
+            if data:
+                items = [{
                     'label': item['label'].encode('utf-8'),
                     'path': plugin.url_for(
                         'get_season_menu', siteid=siteid, cls=cls,
                         seasonid=item['pk'], url=item['url'])
-                } for item in c]
-            return seasonitems
+                } for item in data]
+
+                return __add_listitem(groupname=api.short_name, items=items)
+
+            else:
+                msg = '[B][COLOR red]{txt}[/COLOR][/B]'.format(
+                    txt=_('no_seasons'))
+                plugin.log.error(msg)
+                dialog = xbmcgui.Dialog()
+                dialog.ok(api.long_name, msg)
 
         else:
             msg = [
@@ -153,25 +266,31 @@ def get_season_menu(siteid, cls, seasonid):
     siteid = int(siteid)
     base_url = plugin.request.args['url'][0]
     api = BaseForum.__subclasses__()[siteid]()
-    lang = LANG.get(api.short_name, '')
+    # lang = LANG.get(api.short_name, '')
 
     plugin.log.debug('browse season: {season}'.format(season=seasonid))
 
-    items = [{
-        'label': item['label'],
-        'path': plugin.url_for(
-            'get_episode_menu', siteid=siteid, cls=cls,
-            seasonid=seasonid, episodeid=item['pk'],
-            base_url=base_url, url=item['url'])
-    } for item in api.get_season_menu(base_url)]
+    items = []
 
-    #by_label = itemgetter('label')
-    return items
-    # return __add_listitem(groupname=api.short_name,
-    #                       items=sorted(items, key=by_label))
+    data = get_cached(api.get_season_menu, base_url)
 
+    if data:
+        items = [{
+            'label': item['label'],
+            'path': plugin.url_for(
+                'get_episode_menu', siteid=siteid, cls=cls,
+                seasonid=seasonid, episodeid=item['pk'],
+                base_url=base_url, url=item['url'])
+        } for item in data]
 
-#TODO: add error check if no ep found
+        grouping = api.short_name + ' - s' + seasonid + ' '
+        return __add_listitem(groupname=grouping, items=items)
+    else:
+        msg = '[B][COLOR red]{txt}[/COLOR][/B]'.format(
+            txt=_('no_episodes'))
+        plugin.log.error(msg)
+        dialog = xbmcgui.Dialog()
+        dialog.ok(api.long_name, msg)
 
 
 @plugin.route('/sites/<siteid>-<cls>/<seasonid>/ep<episodeid>/')
@@ -180,7 +299,7 @@ def get_episode_menu(siteid, cls, seasonid, episodeid):
     base_url = plugin.request.args['base_url'][0]
     url = plugin.request.args['url'][0]
     api = BaseForum.__subclasses__()[siteid]()
-    lang = LANG.get(api.short_name, '')
+    # lang = LANG.get(api.short_name, '')
 
     plugin.log.debug('browse episode: {episode}'.format(episode=url))
 
@@ -267,11 +386,11 @@ def play_video(siteid, cls, seasonid, episodeid, videoid):
     url = plugin.request.args['url'][0]
     api = BaseForum.__subclasses__()[siteid]()
 
-    print 'resolve video: {url}'.format(url=url)
+    # print 'resolve video: {url}'.format(url=url)
     plugin.log.debug('resolve video: {url}'.format(url=url))
     media = __resolve_item(url, videoid)
 
-    print 'resolved to: {url}'.format(url=media)
+    # print 'resolved to: {url}'.format(url=media)
 
     if media:
         plugin.set_resolved_url(media)
