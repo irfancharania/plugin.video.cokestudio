@@ -13,43 +13,63 @@ class BaseForum(object):
     local_thumb = ''
     base_url = ''
 
+    # used to build config file link
+    # pk site removed previous seasons and has different link
+    default_season = 1
+
 ###############################################
+    def get_season_config_file(self, language):
+        ''' Get config file for selected country '''
+        url = '{base}{lang}season{default_season}/config/config.xml'.format(
+            base=self.base_url, lang=language, default_season=self.default_season)
 
-    def get_show_menu(self, language):
-        ''' Get list of shows for selected country'''
+        print 'Get config file: {url}'.format(url=url)
 
-        url = '{base}{lang}season1/config/config.xml'.format(
-            base=self.base_url, lang=language)
+        return url
 
-        print 'Get shows menu: {url}'.format(url=url)
+    def get_season_menu(self, siteid, language):
+        ''' Get list of seasons for selected country'''
+        url = self.get_season_config_file(language)
+
+        print 'Get season menu: {url}'.format(url=url)
 
         data = util.get_remote_data(url)
         soup = BeautifulStoneSoup(data, convertEntities=BeautifulSoup.XML_ENTITIES)
 
         items = []
 
-        for item in soup.seasons.findAll('season'):
-            t = item['text']
-            r = re.compile('\d+').findall(t)
-            pk = r[0]
-
-            url = '{base}{lang}season{season}'.format(
-                base=self.base_url, lang=language, season=pk)
-
+        if soup.seasons is None:
             items.append({
-                'label': t,
-                'url': url,
-                'pk': pk
-            })
+                'label': 'Season {default_season}'.format(
+                    default_season=self.default_season),
+                'url': '{base}{lang}season{season}'.format(
+                    base=self.base_url, lang=language, season=self.default_season),
+                'pk': self.default_season
+                })
+        else:
+            for item in soup.seasons.findAll('season'):
+                t = item['text']
+                r = re.compile('\d+').findall(t)
+                pk = r[0]
+
+                url = '{base}{lang}season{season}'.format(
+                    base=self.base_url, lang=language, season=pk)
+
+                items.append({
+                    'label': t,
+                    'url': url,
+                    'pk': pk
+                })
+
         return items
 
-    def get_season_menu(self, base_url):
-        ''' Get list of entries for selected season'''
+    def get_show_menu(self, base_url):
+        ''' Get list of shows for selected season'''
 
         url = '{base}/config/menu-main.xml'.format(
             base=base_url)
 
-        print 'Get seasons menu: {url}'.format(url=url)
+        print 'Get show menu: {url}'.format(url=url)
 
         data = util.get_remote_data(url)
         soup = BeautifulStoneSoup(data, convertEntities=BeautifulSoup.XML_ENTITIES)
@@ -104,7 +124,7 @@ class BaseForum(object):
             if icontainer:
                 info = icontainer.find('li', {'class': pk})
                 if info.p:
-                    desc = info.p.contents[0].encode('utf-8', 'ignore')
+                    desc = info.text.encode('utf-8', 'ignore')
 
             items.append({
                 'label': txt,

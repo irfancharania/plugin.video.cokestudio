@@ -31,7 +31,6 @@ def get_remote_data(url, ismobile=True, referer=None):
 
 def is_site_available(url):
     ''' ping site to see if it is up '''
-
     print 'Checking url: {url}'.format(url=url)
 
     try:

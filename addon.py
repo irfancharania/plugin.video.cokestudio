@@ -60,7 +60,7 @@ def index():
     items = [{
         'label': sc.long_name,
         'path': plugin.url_for(
-            'get_show_menu', siteid=index,
+            'get_season_menu', siteid=index,
             cls=sc.__name__),
         'thumbnail': util.get_image_path(sc.local_thumb),
         'icon': util.get_image_path(sc.local_thumb),
@@ -120,7 +120,7 @@ def add_bookmark(item_path):
     bookmarks = plugin.get_storage(bookmark_storage)
 
     if bookmarks is not None:
-        if not item_path in bookmarks:
+        if item_path not in bookmarks:
             temp = plugin.get_storage(temp_storage)
             item = temp[item_path]
 
@@ -210,7 +210,7 @@ def get_urlresolver_settings():
 
 
 @plugin.route('/sites/<siteid>-<cls>/')
-def get_show_menu(siteid, cls):
+def get_season_menu(siteid, cls):
     siteid = int(siteid)
     api = BaseForum.__subclasses__()[siteid]()
     lang = LANG.get(api.short_name, '')
@@ -224,14 +224,15 @@ def get_show_menu(siteid, cls):
         if available:
             items = []
 
-            # get list of seasons
-            data = get_cached(api.get_show_menu, lang)
+            # siteid provides unique key for cache
+            # as lang not always present
+            data = get_cached(api.get_season_menu, siteid, lang)
 
             if data:
                 items = [{
                     'label': item['label'].encode('utf-8'),
                     'path': plugin.url_for(
-                        'get_season_menu', siteid=siteid, cls=cls,
+                        'get_show_menu', siteid=siteid, cls=cls,
                         seasonid=item['pk'], url=item['url'])
                 } for item in data]
 
@@ -262,7 +263,7 @@ def get_show_menu(siteid, cls):
 
 
 @plugin.route('/sites/<siteid>-<cls>/<seasonid>/')
-def get_season_menu(siteid, cls, seasonid):
+def get_show_menu(siteid, cls, seasonid):
     siteid = int(siteid)
     base_url = plugin.request.args['url'][0]
     api = BaseForum.__subclasses__()[siteid]()
@@ -272,7 +273,7 @@ def get_season_menu(siteid, cls, seasonid):
 
     items = []
 
-    data = get_cached(api.get_season_menu, base_url)
+    data = get_cached(api.get_show_menu, base_url)
 
     if data:
         items = [{
@@ -411,8 +412,10 @@ def __resolve_item(url, title):
 
 
 if __name__ == '__main__':
-    try:
-        plugin.run()
-    except Exception, e:
-        plugin.log.error(e)
-        plugin.notify(msg=e)
+    plugin.run()
+    # try:
+    #     plugin.run()
+    # except Exception, e:
+    #     print e
+    #     plugin.log.error(e)
+    #     plugin.notify(msg=e)
