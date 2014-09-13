@@ -7,6 +7,6 @@ class PakistanApi(BaseForum):
     local_thumb = 'thumb_pakistan.png'
 
     base_url = 'http://www.cokestudio.com.pk/'
-    default_season = 6
+    default_season = 7
 
 ###############################################

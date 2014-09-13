@@ -412,10 +412,9 @@ def __resolve_item(url, title):
 
 
 if __name__ == '__main__':
-    plugin.run()
-    # try:
-    #     plugin.run()
-    # except Exception, e:
-    #     print e
-    #     plugin.log.error(e)
-    #     plugin.notify(msg=e)
+    try:
+        plugin.run()
+    except Exception, e:
+        print e
+        plugin.log.error(e)
+        plugin.notify(msg=e)
