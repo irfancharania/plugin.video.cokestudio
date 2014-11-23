@@ -63,11 +63,19 @@ class BaseForum(object):
 
         return items
 
-    def get_show_menu(self, base_url):
+    def get_show_config_file(self, language):
+        ''' Get config file for selected country '''
+        url = '{base}{lang}season{default_season}/config/menu-main.xml'.format(
+            base=self.base_url, lang=language, default_season=self.default_season)
+
+        print 'Get main menu file: {url}'.format(url=url)
+
+        return url
+
+    def get_show_menu(self, language, base_url):
         ''' Get list of shows for selected season'''
 
-        url = '{base}/config/menu-main.xml'.format(
-            base=base_url)
+        url = self.get_show_config_file(language)
 
         print 'Get show menu: {url}'.format(url=url)
 

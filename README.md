@@ -12,6 +12,7 @@ This addon features streaming content from the following Coke Studio sessions
  - [Pakistan](http://www.cokestudio.com.pk/) (English)
  - [India](http://www.cokestudioindia.com/) (English)
  - [Middle East](http://www.cokestudiome.com/) (English/Arabic)
+ - [Mozambique](http://mz.cokestudio.com/) (Portuguese)
  - [Tanzania](http://www.cokestudio.co.tz/) (English/Swahili)
  - [Nigeria](http://www.cokestudio.ng/) (English/French)
  - [Kenya](http://www.cokestudio.co.ke/) (English/French/Swahili)
@@ -27,5 +28,5 @@ The repo can also be found on [fusion.xbmchub.com](fusion.xbmchub.com)'s Addon I
 The addon relies on the following addons to resolve/play videos
 
  - [Url Resolver](http://wiki.xbmc.org/index.php?title=Add-on:Urlresolver)
- - [Vimeo](http://wiki.xbmc.org/index.php?title=Add-on:Vimeo)
- - [YouTube](http://wiki.xbmc.org/index.php?title=Add-on:YouTube)
+ - [Vimeo](http://wiki.xbmc.org/index.php?title=Add-on:Vimeo) ([forum](http://forum.kodi.tv/showthread.php?tid=81052))
+ - [YouTube](http://wiki.xbmc.org/index.php?title=Add-on:YouTube) ([forum](http://forum.kodi.tv/showthread.php?tid=79487))
