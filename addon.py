@@ -13,6 +13,7 @@ plugin = Plugin()
 LANG = {
     'me': plugin.get_setting(
         'lang_me', choices=('en_ME/', 'ar_ME/')),
+    'mz': 'pt_MZ/',
     'ke': plugin.get_setting(
         'lang_ke', choices=('en_KE/', 'fr_KE/', 'sw_KE/')),
     'ng': plugin.get_setting(
@@ -267,13 +268,13 @@ def get_show_menu(siteid, cls, seasonid):
     siteid = int(siteid)
     base_url = plugin.request.args['url'][0]
     api = BaseForum.__subclasses__()[siteid]()
-    # lang = LANG.get(api.short_name, '')
+    lang = LANG.get(api.short_name, '')
 
     plugin.log.debug('browse season: {season}'.format(season=seasonid))
 
     items = []
 
-    data = get_cached(api.get_show_menu, base_url)
+    data = get_cached(api.get_show_menu, lang, base_url)
 
     if data:
         items = [{
